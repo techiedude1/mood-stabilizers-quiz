@@ -1,184 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Mood Stabilizers Quiz</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #8EC5FC, #E0C3FC);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
       color: #333;
       padding: 20px;
+      margin: 0;
     }
-    .quiz-container {
-      background: white;
-      border-radius: 15px;
-      padding: 30px;
-      max-width: 800px;
+    .container {
+      max-width: 900px;
       margin: auto;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
     }
     h1 {
       text-align: center;
-      color: #4A00E0;
+      color: #4e9af1;
+      margin-bottom: 30px;
     }
     .question {
       margin-bottom: 25px;
+      padding: 20px;
+      background: #f0f9ff;
+      border-left: 5px solid #4e9af1;
+      border-radius: 8px;
     }
-    .question h3 {
-      margin-bottom: 10px;
-      color: #4A00E0;
-    }
-    label {
+    .options label {
       display: block;
+      padding: 10px 15px;
       margin: 5px 0;
+      background: #f8fcff;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid #d8ecff;
+    }
+    .options input[type="radio"] {
+      margin-right: 10px;
     }
     button {
-      background-color: #7F00FF;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
+      background-color: #4e9af1;
+      color: #fff;
+      padding: 12px 24px;
       font-size: 16px;
-      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #6200ea;
+      background-color: #2d7ad4;
     }
-    .result {
-      margin-top: 30px;
+    #results {
+      margin-top: 40px;
       font-size: 18px;
-      text-align: center;
+      line-height: 1.6;
+    }
+    .explanation {
+      background: #eef7ff;
+      padding: 10px 15px;
+      border-left: 4px solid #4e9af1;
+      margin-top: 8px;
+      border-radius: 6px;
+    }
+    .incorrect-answer {
+      color: #d62828;
       font-weight: bold;
     }
-    .feedback {
-      text-align: left;
-      margin-top: 10px;
-      background-color: #f8f8f8;
-      padding: 15px;
-      border-left: 4px solid #7F00FF;
-      border-radius: 8px;
+    .correct-answer {
+      color: #2a9d8f;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container">
-    <h1>Mood Stabilizers Quiz</h1>
-    <form id="quizForm"></form>
-    <button type="button" onclick="calculateScore()">Submit Quiz</button>
-    <div class="result" id="result"></div>
-    <div class="feedback" id="feedback"></div>
-  </div>
+<div class="container">
+  <h1>Mood Stabilizers Quiz</h1>
+  <form id="quizForm"></form>
+  <button onclick="submitQuiz()">Submit Quiz</button>
+  <div id="results"></div>
+</div>
 
-  <script>
-    const questions = [
-      {
-        question: "Which of the following mood stabilizers is associated with polycystic ovary syndrome (PCOS)?",
-        options: ["Lithium", "Valproic acid", "Lamotrigine", "Carbamazepine"],
-        answer: "Valproic acid",
-        explain: "Valproic acid has been associated with PCOS, especially in younger females."
-      },
-      {
-        question: "What is a key clinical concern with rapid titration of lamotrigine?",
-        options: ["Weight gain", "Stevens-Johnson syndrome", "Hypertension", "Renal impairment"],
-        answer: "Stevens-Johnson syndrome",
-        explain: "Rapid titration of lamotrigine increases the risk of Stevens-Johnson syndrome."
-      },
-      {
-        question: "Which mood stabilizer is known to cause leukopenia and aplastic anemia?",
-        options: ["Lithium", "Carbamazepine", "Lamotrigine", "Valproic acid"],
-        answer: "Carbamazepine",
-        explain: "Carbamazepine is known to cause aplastic anemia and agranulocytosis."
-      },
-      {
-        question: "Which of the following requires regular serum level monitoring due to narrow therapeutic index?",
-        options: ["Lamotrigine", "Carbamazepine", "Lithium", "Oxcarbazepine"],
-        answer: "Lithium",
-        explain: "Lithium requires regular monitoring due to its narrow therapeutic index."
-      },
-      {
-        question: "Which medication is most commonly associated with neural tube defects when used during pregnancy?",
-        options: ["Lithium", "Carbamazepine", "Lamotrigine", "Valproic acid"],
-        answer: "Valproic acid",
-        explain: "Valproic acid has the highest risk of neural tube defects among mood stabilizers."
-      },
-      {
-        question: "Which mood stabilizer is known to cause hypothyroidism?",
-        options: ["Valproic acid", "Lamotrigine", "Lithium", "Topiramate"],
-        answer: "Lithium",
-        explain: "Lithium commonly leads to hypothyroidism with long-term use."
-      },
-      {
-        question: "Which of the following is the mechanism of action of lithium?",
-        options: ["Enhances GABA activity", "Inhibits voltage-gated sodium channels", "Modulates second messenger systems", "Blocks AMPA receptors"],
-        answer: "Modulates second messenger systems",
-        explain: "Lithium modulates second messenger systems, such as IP3 and cAMP."
-      },
-      {
-        question: "Which of the following agents has the lowest teratogenic risk in pregnancy?",
-        options: ["Valproic acid", "Lamotrigine", "Carbamazepine", "Lithium"],
-        answer: "Lamotrigine",
-        explain: "Lamotrigine has the lowest teratogenic risk among common mood stabilizers."
-      },
-      {
-        question: "Which mood stabilizer is a potent hepatic enzyme inducer?",
-        options: ["Valproic acid", "Carbamazepine", "Lamotrigine", "Lithium"],
-        answer: "Carbamazepine",
-        explain: "Carbamazepine is a strong inducer of CYP enzymes, affecting drug metabolism."
-      },
-      {
-        question: "Which medication is most appropriate for bipolar depression without significant risk of switching to mania?",
-        options: ["Lithium", "Lamotrigine", "Valproic acid", "Carbamazepine"],
-        answer: "Lamotrigine",
-        explain: "Lamotrigine is preferred in bipolar depression due to low risk of mania induction."
-      }
-    ];
+<script>
+const questions = [
+  {
+    question: "Which of the following mood stabilizers requires frequent blood level monitoring due to a narrow therapeutic index?",
+    options: ["Valproic acid", "Carbamazepine", "Lithium", "Lamotrigine"],
+    correct: 2,
+    explanation: "Lithium has a narrow therapeutic index and requires frequent monitoring to prevent toxicity."
+  },
+  {
+    question: "Which adverse effect is most commonly associated with valproic acid?",
+    options: ["Alopecia", "Hyponatremia", "Nephrotoxicity", "Stevens-Johnson Syndrome"],
+    correct: 0,
+    explanation: "Alopecia and weight gain are common with valproic acid; SJS is more associated with lamotrigine."
+  },
+  {
+    question: "Which mood stabilizer is most strongly associated with neural tube defects when used during pregnancy?",
+    options: ["Lamotrigine", "Lithium", "Valproic acid", "Carbamazepine"],
+    correct: 2,
+    explanation: "Valproic acid is associated with neural tube defects like spina bifida when used in pregnancy."
+  },
+  {
+    question: "Which drug can cause lithium levels to increase, risking toxicity?",
+    options: ["NSAIDs", "SSRIs", "Calcium", "Metformin"],
+    correct: 0,
+    explanation: "NSAIDs reduce renal perfusion, decreasing lithium clearance and increasing serum levels."
+  },
+  {
+    question: "What is a life-threatening skin condition associated with rapid titration of lamotrigine?",
+    options: ["Eczema", "Urticaria", "Stevens-Johnson Syndrome", "Psoriasis"],
+    correct: 2,
+    explanation: "Stevens-Johnson Syndrome is a rare but serious reaction to fast lamotrigine titration."
+  },
+  {
+    question: "What hematologic condition is a known adverse effect of carbamazepine?",
+    options: ["Eosinophilia", "Aplastic anemia", "Pancytosis", "Hyperleukocytosis"],
+    correct: 1,
+    explanation: "Carbamazepine can cause rare but serious aplastic anemia and agranulocytosis."
+  },
+  {
+    question: "Which medication is known for autoinduction, requiring dose adjustments over time?",
+    options: ["Lamotrigine", "Lithium", "Carbamazepine", "Oxcarbazepine"],
+    correct: 2,
+    explanation: "Carbamazepine induces its own metabolism (autoinduction), requiring gradual dose increases."
+  },
+  {
+    question: "Which mood stabilizer is considered safest in pregnancy?",
+    options: ["Lithium", "Valproic acid", "Lamotrigine", "Carbamazepine"],
+    correct: 2,
+    explanation: "Lamotrigine has the most favorable safety profile in pregnancy among common mood stabilizers."
+  },
+  {
+    question: "What is the recommended action if a patient on lithium develops confusion and tremor?",
+    options: ["Check lithium level", "Start lorazepam", "Switch to valproate", "Reduce sodium intake"],
+    correct: 0,
+    explanation: "Confusion and tremor are signs of lithium toxicity; serum levels must be checked immediately."
+  },
+  {
+    question: "Which of the following is renally excreted and not metabolized hepatically?",
+    options: ["Valproic acid", "Carbamazepine", "Lamotrigine", "Lithium"],
+    correct: 3,
+    explanation: "Lithium is almost exclusively renally eliminated, with minimal hepatic metabolism."
+  },
+  {
+    question: "Which is most appropriate in bipolar depression due to low risk of inducing mania?",
+    options: ["Lamotrigine", "Lithium", "Valproic acid", "Topiramate"],
+    correct: 0,
+    explanation: "Lamotrigine is effective in bipolar depression with low mania induction risk."
+  },
+  {
+    question: "What black box warning is associated with valproic acid?",
+    options: ["QT prolongation", "Renal toxicity", "Pancreatitis", "Photosensitivity"],
+    correct: 2,
+    explanation: "Valproic acid has a black box warning for life-threatening pancreatitis."
+  },
+  {
+    question: "What happens to lamotrigine levels when used with enzyme inducers like carbamazepine?",
+    options: ["Increase", "No change", "Decrease", "Unpredictable"],
+    correct: 2,
+    explanation: "Carbamazepine induces lamotrigine metabolism, decreasing its levels."
+  },
+  {
+    question: "Which labs are essential to monitor in patients on lithium long-term?",
+    options: ["ALT and AST", "Calcium and BUN", "TSH and Creatinine", "B12 and Folate"],
+    correct: 2,
+    explanation: "Lithium can impair renal and thyroid function; monitor TSH and creatinine."
+  },
+  {
+    question: "Compared to carbamazepine, oxcarbazepine has a higher incidence of which effect?",
+    options: ["Rash", "Dizziness", "Hyponatremia", "Anemia"],
+    correct: 2,
+    explanation: "Oxcarbazepine has a higher risk of hyponatremia than carbamazepine."
+  }
+];
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+function loadQuiz() {
+  const shuffled = questions.sort(() => 0.5 - Math.random()).slice(0, 15);
+  const form = document.getElementById("quizForm");
+  form.innerHTML = "";
+  shuffled.forEach((q, i) => {
+    const qDiv = document.createElement("div");
+    qDiv.classList.add("question");
+    qDiv.innerHTML = `<p><b>Q${i + 1}:</b> ${q.question}</p>`;
+    q.options.forEach((opt, j) => {
+      qDiv.innerHTML += `
+        <div class="options">
+          <label><input type="radio" name="q${i}" value="${j}"> ${opt}</label>
+        </div>`;
+    });
+    form.appendChild(qDiv);
+  });
+  form.dataset.shuffled = JSON.stringify(shuffled);
+}
+
+function submitQuiz() {
+  const form = document.getElementById("quizForm");
+  const shuffled = JSON.parse(form.dataset.shuffled);
+  let score = 0;
+  let resultsHTML = "<h2>Your Results:</h2>";
+  let incorrect = "";
+
+  shuffled.forEach((q, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const answer = selected ? parseInt(selected.value) : null;
+    if (answer === q.correct) {
+      score++;
+    } else {
+      const userAnswer = answer !== null ? `<span class="incorrect-answer">Your Answer: ${q.options[answer]}</span><br>` : `<span class="incorrect-answer">No answer selected</span><br>`;
+      incorrect += `<p><b>Q${i + 1}:</b> ${q.question}<br>
+        ${userAnswer}
+        <span class="correct-answer">Correct Answer: ${q.options[q.correct]}</span>
+        <div class="explanation">${q.explanation}</div></p>`;
     }
+  });
 
-    function loadQuiz() {
-      shuffle(questions);
-      const selected = questions.slice(0, 10);
-      const form = document.getElementById("quizForm");
-      form.innerHTML = "";
-      selected.forEach((q, idx) => {
-        const qDiv = document.createElement("div");
-        qDiv.className = "question";
-        qDiv.innerHTML = `<h3>${idx + 1}. ${q.question}</h3>` +
-          q.options.map((opt, i) => `
-            <label><input type="radio" name="q${idx}" value="${opt}"> ${opt}</label>
-          `).join("");
-        form.appendChild(qDiv);
-      });
-    }
+  const percentage = ((score / 15) * 100).toFixed(1);
+  resultsHTML += `<p><b>Your Score: ${score} / 15 (${percentage}%)</b></p>`;
+  if (incorrect) {
+    resultsHTML += `<h3>Review Incorrect Answers:</h3>${incorrect}`;
+  }
+  document.getElementById("results").innerHTML = resultsHTML;
+}
 
-    function calculateScore() {
-      let score = 0;
-      let feedbackHtml = '';
-      const form = document.getElementById("quizForm");
-      const formQuestions = form.querySelectorAll(".question");
-      formQuestions.forEach((qDiv, idx) => {
-        const selected = qDiv.querySelector(`input[name="q${idx}"]:checked`);
-        const correct = questions[idx].answer;
-        if (selected && selected.value === correct) {
-          score++;
-        } else {
-          feedbackHtml += `<p><strong>Question ${idx + 1}:</strong> Incorrect. ${questions[idx].explain}</p>`;
-        }
-      });
-      const percent = Math.round((score / 10) * 100);
-      document.getElementById("result").innerHTML = `You scored <span style="color: #4A00E0">${score}</span> out of 10 (${percent}%)`;
-      document.getElementById("feedback").innerHTML = feedbackHtml;
-    }
-
-    window.onload = loadQuiz;
-  </script>
+window.onload = loadQuiz;
+</script>
 </body>
 </html>
